@@ -1,0 +1,44 @@
+plugins {
+    id "java-library"
+    id "maven-publish"
+}
+
+group = "com.naocraftlab"
+version = "${projectVersion}"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly "org.slf4j:slf4j-api:${slf4jVersion}"
+    compileOnly "org.apache.logging.log4j:log4j-api:${log4jVersion}"
+    compileOnly "com.google.code.gson:gson:${gsonVersion}"
+
+    testImplementation platform("org.junit:junit-bom:${junitBomVersion}")
+    testImplementation "org.junit.jupiter:junit-jupiter"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+test {
+    useJUnitPlatform()
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+    archiveClassifier.set("sources")
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            artifact sourceJar
+        }
+    }
+}
